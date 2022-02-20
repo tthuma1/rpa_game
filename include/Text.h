@@ -15,6 +15,7 @@ private:
 
 public:
     void init(SDL_Renderer *renderer, int x, int y, char text[]);
+    void init_center(SDL_Renderer *renderer, int y, int size, char text[]);
 
     void draw();
     void change_text(char text[]);

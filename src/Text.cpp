@@ -20,6 +20,25 @@ void Text::init(SDL_Renderer *renderer, int x, int y, char text[])
     SDL_RenderCopy(this->renderer, message, NULL, &messageRect);
 }
 
+void Text::init_center(SDL_Renderer *renderer, int y, int size, char text[])
+{
+    std::cout << "Text init\n";
+    this->renderer = renderer;
+
+    std::cout << text << std::endl;
+
+    font = TTF_OpenFont("assets/Arcadepix Plus.ttf", size);
+    color = {255, 255, 255};
+
+    SDL_Surface *surfaceMessage = TTF_RenderText_Solid(font, text, color);
+
+    message = SDL_CreateTextureFromSurface(renderer, surfaceMessage);
+    int x = (WIDTH - surfaceMessage->w) / 2;
+    messageRect = {x, y, surfaceMessage->w, surfaceMessage->h};
+
+    SDL_RenderCopy(this->renderer, message, NULL, &messageRect);
+}
+
 void Text::draw()
 {
     SDL_RenderCopy(renderer, message, NULL, &messageRect);

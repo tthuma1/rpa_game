@@ -7,8 +7,8 @@
 #define PL_HEIGHT 43
 #define PL_WIDTH 28
 
-#define SPEED 1
-#define ENEMY_SPEED 1
+#define SPEED 4
+#define ENEMY_SPEED 3
 
 #define PL_X 450
 #define PL_Y 300
