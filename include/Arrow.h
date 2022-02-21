@@ -24,5 +24,6 @@ public:
     void init(SDL_Renderer *renderer);
 
     void draw();
+    void draw(int x, int y, int w, int h);
     void set_direction(int);
 };

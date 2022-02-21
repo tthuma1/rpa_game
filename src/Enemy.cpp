@@ -89,3 +89,8 @@ int Enemy::get_platform_num()
 {
     return platform_num;
 }
+
+void Enemy::reset()
+{
+    relative_x = 0;
+}

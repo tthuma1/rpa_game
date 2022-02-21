@@ -3,7 +3,6 @@
 
 void Menu::init(SDL_Renderer *renderer)
 {
-
     this->renderer = renderer;
     position = 0;
 
@@ -13,7 +12,7 @@ void Menu::init(SDL_Renderer *renderer)
     background = SDL_CreateTextureFromSurface(this->renderer, surface);
 
     // title
-    char tmp_text[] = "Osvoboditelj";
+    char tmp_text[60] = "Osvoboditelj";
     title.init_center(renderer, HEIGHT / 2 - 150, 70, tmp_text);
 
     // izbira

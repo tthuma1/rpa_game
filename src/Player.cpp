@@ -73,3 +73,9 @@ bool Player::get_is_on_platform()
 {
     return is_on_platform;
 }
+
+void Player::reset(int x, int y)
+{
+    rect.x = x;
+    rect.y = y;
+}

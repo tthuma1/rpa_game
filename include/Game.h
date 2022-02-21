@@ -17,6 +17,7 @@
 #include <Arrow.h>
 #include <GameOver.h>
 #include <Menu.h>
+#include <Tutorial.h>
 
 class Game
 {
@@ -30,7 +31,7 @@ private:
     int num_platforms[4] = {5, 8, 11, 13}; // glede na level
     int num_animals[4] = {3, 5, 7, 9};
     int animals_left;
-    int screen; // 0 = game, 1 = game over, 2 = menu
+    int screen; // 0 = game, 1 = game over, 2 = menu, 3 = tutorial
     bool just_died;
 
     Player player;
@@ -46,6 +47,7 @@ private:
     Text level_done;
     GameOver game_over_screen;
     Menu menu_screen;
+    Tutorial tutorial_screen;
 
     std::chrono::steady_clock::time_point last_frame = std::chrono::steady_clock::now();
     std::chrono::steady_clock::time_point curr_time;
@@ -57,5 +59,6 @@ public:
     void game_screen();
     void game_over();
     void menu();
+    void tutorial();
     void init_level();
 };

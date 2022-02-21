@@ -50,6 +50,16 @@ void Arrow::draw()
     SDL_RenderCopy(this->renderer, assets[direction - 1], NULL, &rect);
 }
 
+void Arrow::draw(int x, int y, int w, int h)
+{
+    direction = 3;
+    rect.x = x;
+    rect.y = y;
+    rect.w = w;
+    rect.h = h;
+    SDL_RenderCopy(this->renderer, assets[direction - 1], NULL, &rect);
+}
+
 void Arrow::set_direction(int a)
 {
     direction = a;

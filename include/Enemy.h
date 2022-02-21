@@ -42,4 +42,6 @@ public:
 
     void detect_end_collision();
     bool detect_player_collision(SDL_Rect);
+
+    void reset();
 };

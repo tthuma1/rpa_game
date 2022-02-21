@@ -47,4 +47,6 @@ public:
     void set_direction(int);
     void set_is_on_platform(bool);
     bool get_is_on_platform();
+
+    void reset(int x, int y);
 };

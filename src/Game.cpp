@@ -18,6 +18,8 @@ Game::Game()
     window = SDL_CreateWindow("Osvoboditelj", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, WIDTH, HEIGHT, SDL_WINDOW_SHOWN);
     renderer = SDL_CreateRenderer(window, -1, 0);
 
+    std::cout << "Game init\n";
+
     is_running = true;
     screen = 2;
 
@@ -40,6 +42,7 @@ Game::Game()
 
     game_over_screen.init(renderer);
     menu_screen.init(renderer);
+    tutorial_screen.init(renderer);
 
     this->init_level();
 }
@@ -151,6 +154,10 @@ void Game::run()
             break;
         case 2:
             this->menu();
+            break;
+        case 3:
+            this->tutorial();
+            break;
         }
 
         // SDL_RenderPresent(renderer);
@@ -471,8 +478,7 @@ void Game::menu()
                     this->init_level();
                 }
                 else if (pos == 1)
-                {
-                }
+                    screen = 3;
                 else
                     is_running = false;
                 break;
@@ -482,5 +488,30 @@ void Game::menu()
 
     SDL_RenderClear(renderer);
     menu_screen.draw();
+    SDL_RenderPresent(renderer);
+}
+
+void Game::tutorial()
+{
+    SDL_Event e;
+    while (SDL_PollEvent(&e) != 0)
+    {
+        // std::cout << e.type << std::endl;
+        if (e.type == SDL_QUIT)
+            is_running = false;
+        else if (e.type == SDL_KEYDOWN)
+        {
+            switch (e.key.keysym.sym)
+            {
+            case SDLK_SPACE:
+            case SDLK_RETURN:
+                screen = 2;
+                break;
+            }
+        }
+    }
+
+    SDL_RenderClear(renderer);
+    tutorial_screen.draw();
     SDL_RenderPresent(renderer);
 }

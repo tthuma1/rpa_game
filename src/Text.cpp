@@ -22,7 +22,7 @@ void Text::init(SDL_Renderer *renderer, int x, int y, char text[])
 
 void Text::init_center(SDL_Renderer *renderer, int y, int size, char text[])
 {
-    std::cout << "Text init\n";
+    std::cout << "Text init center\n";
     this->renderer = renderer;
 
     std::cout << text << std::endl;
