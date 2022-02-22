@@ -12,7 +12,7 @@ Player::Player()
 
 void Player::init(SDL_Renderer *renderer)
 {
-    std::cout << "Player initialized\n";
+    // std::cout << "Player initialized\n";
     this->renderer = renderer;
 
     char tmp[40];

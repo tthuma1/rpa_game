@@ -1,7 +1,6 @@
 #pragma once
 
 #include <SDL2/SDL.h>
-
 #include <Text.h>
 
 class GameOver
@@ -14,4 +13,6 @@ private:
 public:
     void init(SDL_Renderer *renderer);
     void draw();
+    void won();
+    void reset();
 };

@@ -39,7 +39,7 @@ private:
             "Zlobni znanstveniki Vasje ti zivljenje vzamejo",
             "Pomocnica Neza pa ti zivljenje doda",
             "Opraviti moras 4 stopnje",
-            "Na zaslonu ti bo puscica povedala v kateri smeri je zival",
+            "Na zaslonu ti bo puscica povedala, v kateri smeri je zival",
             "Nazaj",
     };
     int n = 14; // number of actually used texts, could delete when finished

@@ -3,7 +3,7 @@
 
 void Enemy::init(SDL_Renderer *renderer, int plat_num)
 {
-    std::cout << "Enemy initilized\n";
+    // std::cout << "Enemy initilized\n";
     this->renderer = renderer;
     platform_num = plat_num;
 

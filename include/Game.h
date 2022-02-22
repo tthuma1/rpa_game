@@ -43,8 +43,7 @@ private:
     Animal animal;
     Ally ally;
     Arrow arrow;
-    Text preostale;
-    Text level_done;
+    Text preostale, level_done;
     GameOver game_over_screen;
     Menu menu_screen;
     Tutorial tutorial_screen;

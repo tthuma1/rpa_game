@@ -11,13 +11,13 @@ void Tutorial::init(SDL_Renderer *renderer)
     SDL_Surface *surface = IMG_Load("assets/background.png");
     background = SDL_CreateTextureFromSurface(this->renderer, surface);
 
-    std::cout << "Navdila init\n";
+    // std::cout << "Navdila init\n";
 
     // title
     char tmp_text[60] = "Navodila";
     title.init_center(renderer, 10, 50, tmp_text);
 
-    std::cout << "Navodila title initialized\n";
+    // std::cout << "Navodila title initialized\n";
 
     // besedila
     int i = 0;

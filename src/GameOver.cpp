@@ -21,3 +21,15 @@ void GameOver::draw()
     text2.draw();
     text3.draw();
 }
+
+void GameOver::won()
+{
+    char tmp_text[] = "Resil si vse zivali!";
+    text1.change_text_center(tmp_text);
+}
+
+void GameOver::reset()
+{
+    char tmp_text[] = "Konec igre";
+    text1.change_text_center(tmp_text);
+}

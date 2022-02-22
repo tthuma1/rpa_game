@@ -19,4 +19,5 @@ public:
 
     void draw();
     void change_text(char text[]);
+    void change_text_center(char text[]);
 };

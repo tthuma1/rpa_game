@@ -18,7 +18,7 @@ Game::Game()
     window = SDL_CreateWindow("Osvoboditelj", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, WIDTH, HEIGHT, SDL_WINDOW_SHOWN);
     renderer = SDL_CreateRenderer(window, -1, 0);
 
-    std::cout << "Game init\n";
+    // std::cout << "Game init\n";
 
     is_running = true;
     screen = 2;
@@ -113,7 +113,7 @@ void Game::init_level()
 
     // first animal position
     int tmp = rand() % num_platforms[level];
-    std::cout << "plat: " << tmp << std::endl;
+    // std::cout << "plat: " << tmp << std::endl;
 
     SDL_Rect tmp_rect = platforms[tmp].get_rect();
     int tmp_relative_x = rand() % (PLAT_WIDTH - ANIMAL_WIDTH);
@@ -344,7 +344,7 @@ void Game::game_screen()
         {
             // std::cout << "player-animal collision\n";
             int tmp = rand() % num_platforms[level];
-            std::cout << "plat: " << tmp << std::endl;
+            // std::cout << "plat: " << tmp << std::endl;
 
             SDL_Rect tmp_rect = platforms[tmp].get_rect();
             int tmp_relative_x = rand() % (PLAT_WIDTH - ANIMAL_WIDTH);
@@ -377,8 +377,14 @@ void Game::game_screen()
 
         preostale.draw();
 
+        if (animals_left <= 0 && level == 3) // game is finished
+        {
+            game_over_screen.won(); // just change text of game over screen
+            screen = 1;
+            just_died = true; // for screen to work correctly
+        }
         // if level is finished
-        if (animals_left <= 0)
+        else if (animals_left <= 0)
         {
             // std::cout << "Stopnja je opravljena";
             curr_time = std::chrono::steady_clock::now();
@@ -403,6 +409,7 @@ void Game::game_screen()
         // if player is dead and hasn't finished the level
         if (health.get_health() <= 0 && first_finish == true)
         {
+            game_over_screen.reset();
             screen = 1;
             just_died = true;
         }
@@ -426,12 +433,14 @@ void Game::game_over()
             switch (e.key.keysym.sym)
             {
             case SDLK_n:
+                game_over_screen.reset(); // reset game over text
                 screen = 0;
                 level = 0;
 
                 this->init_level();
                 break;
             case SDLK_m:
+                game_over_screen.reset(); // reset game over text
                 screen = 2;
                 break;
             }

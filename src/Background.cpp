@@ -11,7 +11,7 @@ Background::Background()
 
 void Background::init(SDL_Renderer *renderer)
 {
-    std::cout << "Background initialized\n";
+    // std::cout << "Background initialized\n";
     rect = {0, -BG_HEIGHT + HEIGHT, BG_WIDTH, BG_HEIGHT};
     this->renderer = renderer;
 

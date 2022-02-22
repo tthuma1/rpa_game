@@ -4,7 +4,7 @@
 
 int main(int argv, char **args)
 {
-    std::cout << "starting\n";
+    // std::cout << "starting\n";
     Game game;
     game.run();
     return 0;
