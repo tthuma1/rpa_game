@@ -63,10 +63,16 @@ void Game::init_level()
     // create text for preostale
     char tmp_text[40] = "Preostale zivali:  ";
     tmp_text[strlen(tmp_text) - 1] = '0' + animals_left;
+    preostale.init(renderer, 20, 10, tmp_text);
+
+    // create text for level_curr
+    strcpy(tmp_text, "Stopnja   od 4");
+    tmp_text[8] = '1' + level;
+    // std::cout << tmp_text << std::endl;
+    level_curr.init(renderer, 20, 50, tmp_text);
 
     background.reset(start_x);
     ground.reset(start_x);
-    preostale.init(renderer, 20, 10, tmp_text);
 
     enemies.clear();
     for (int i = 0; i < num_platforms[level]; i++)
@@ -376,6 +382,7 @@ void Game::game_screen()
         }
 
         preostale.draw();
+        level_curr.draw();
 
         if (animals_left <= 0 && level == 3) // game is finished
         {

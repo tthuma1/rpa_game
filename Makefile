@@ -8,16 +8,16 @@ CXXFLAGS = -std=c++11 -Wall -g -Iinclude -Llib
 LDFLAGS = -lmingw32 -lSDL2main -lSDL2 -lSDL2_image -lSDL2_ttf
 
 # Makefile settings - Can be customized.
-APPNAME = game
+APPNAME = osvoboditelj
 EXT = .cpp
 SRCDIR = src
 OBJDIR = obj
-BIN = bin
+DEPSDIR = deps
 
 ############## Do not change anything from here downwards! #############
 SRC = $(wildcard $(SRCDIR)/*$(EXT))
 OBJ = $(SRC:$(SRCDIR)/%$(EXT)=$(OBJDIR)/%.o)
-DEP = $(OBJ:$(OBJDIR)/%.o=%.d)
+DEP = $(OBJ:$(OBJDIR)/%.o=$(DEPSDIR)/%.d)
 # UNIX-based OS variables & settings
 RM = rm
 DELOBJ = $(OBJ)
@@ -34,10 +34,10 @@ all: $(APPNAME)
 
 # Builds the app
 $(APPNAME): $(OBJ)
-	$(CC) $(CXXFLAGS) -o $(BIN)/$@ $^ $(LDFLAGS)
+	$(CC) $(CXXFLAGS) -o $@ $^ $(LDFLAGS)
 
 # Creates the dependecy rules
-%.d: $(SRCDIR)/%$(EXT)
+$(DEPSDIR)/%.d: $(SRCDIR)/%$(EXT)
 	@$(CPP) $(CFLAGS) $< -MM -MT $(@:%.d=$(OBJDIR)/%.o) >$@
 
 # Includes all .h files
@@ -62,7 +62,7 @@ cleandep:
 # Cleans complete project
 .PHONY: cleanw
 cleanw:
-	$(DEL) $(WDELOBJ) $(DEP) $(BIN)\$(APPNAME)$(EXE)
+	$(DEL) $(WDELOBJ) $(DEP) $(APPNAME)$(EXE)
 
 # Cleans only all files with the extension .d
 .PHONY: cleandepw
