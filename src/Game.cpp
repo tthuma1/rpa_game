@@ -183,6 +183,7 @@ void Game::game_screen()
             switch (e.key.keysym.sym)
             {
             case SDLK_d:
+            case SDLK_RIGHT:
                 ground.set_direction(1);
                 background.set_direction(1);
                 player.set_direction(1);
@@ -192,6 +193,7 @@ void Game::game_screen()
                 ally.set_direction(1);
                 break;
             case SDLK_a:
+            case SDLK_LEFT:
                 ground.set_direction(2);
                 background.set_direction(2);
                 player.set_direction(2);
@@ -202,6 +204,7 @@ void Game::game_screen()
                 break;
             case SDLK_j:
             case SDLK_s:
+            case SDLK_DOWN:
                 ground.set_direction(0);
                 background.set_direction(0);
                 player.set_direction(0);
@@ -212,6 +215,7 @@ void Game::game_screen()
                 break;
             case SDLK_w:
             case SDLK_SPACE:
+            case SDLK_UP:
                 // std::cout << "space " << player.get_vel_y() << std::endl;
                 if (player.get_vel_y() == 0) // no double jumping
                     player.set_vel_y(20);
