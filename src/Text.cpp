@@ -51,6 +51,14 @@ void Text::change_text(char text[])
     messageRect.w = surfaceMessage->w;
 }
 
+void Text::change_text(char text[], int x)
+{
+    SDL_Surface *surfaceMessage = TTF_RenderText_Solid(font, text, color);
+    message = SDL_CreateTextureFromSurface(renderer, surfaceMessage);
+    messageRect.w = surfaceMessage->w;
+    messageRect.x = WIDTH - surfaceMessage->w - x;
+}
+
 void Text::change_text_center(char text[])
 {
     SDL_Surface *surfaceMessage = TTF_RenderText_Solid(font, text, color);

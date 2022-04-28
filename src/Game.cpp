@@ -71,6 +71,9 @@ void Game::init_level()
     // std::cout << tmp_text << std::endl;
     level_curr.init(renderer, 20, 50, tmp_text);
 
+    strcpy(tmp_text, "0 s");
+    time_text.init(renderer, 20, 90, tmp_text);
+
     background.reset(start_x);
     ground.reset(start_x);
 
@@ -142,6 +145,12 @@ void Game::init_level()
 
     health.reset();
     player.set_vel_y(-10);
+
+    if (level == 0)
+    {
+        start_game_time = std::chrono::steady_clock::now();
+        player_stats.points = 0;
+    }
 
     // std::cout << "End init\n";
 }
@@ -315,7 +324,8 @@ void Game::game_screen()
         {
             platforms[i].draw();
         }
-        animal.draw();
+        if (animals_left > 0)
+            animal.draw();
         ally.draw();
         for (int i = 0; i < (int)enemies.size(); i++)
         {
@@ -338,7 +348,8 @@ void Game::game_screen()
         else
             arrow.set_direction(0);
 
-        arrow.draw();
+        if (animals_left > 0)
+            arrow.draw();
 
         // player - enemy collision
         SDL_Rect tmp_pl_rect = player.get_rect();
@@ -362,6 +373,7 @@ void Game::game_screen()
 
             // decrease animals left
             animals_left--;
+            player_stats.points++;
             char tmp_text[40] = "Preostale zivali:  ";
             tmp_text[strlen(tmp_text) - 1] = '0' + animals_left;
             preostale.change_text(tmp_text);
@@ -425,6 +437,20 @@ void Game::game_screen()
             just_died = true;
         }
 
+        // update time counter
+        curr_game_time = std::chrono::steady_clock::now();
+
+        std::chrono::duration<int> time_span = std::chrono::duration_cast<std::chrono::duration<int>>(curr_game_time - start_game_time);
+
+        char tmp_text[40];
+        sprintf(tmp_text, "%d", time_span.count());
+        char tmp_text2[50] = "Cas: ";
+        strcat(tmp_text2, tmp_text);
+        strcat(tmp_text2, " s");
+        time_text.change_text(tmp_text2, 20);
+
+        time_text.draw();
+
         // frame is updated
         last_frame = curr_time;
         SDL_RenderPresent(renderer);
@@ -460,6 +486,22 @@ void Game::game_over()
 
     if (just_died) // to draw only once
     {
+        curr_game_time = std::chrono::steady_clock::now();
+        std::chrono::duration<int> time_span = std::chrono::duration_cast<std::chrono::duration<int>>(curr_game_time - start_game_time);
+        player_stats.time = time_span.count();
+
+        write_result();
+        game_over_screen.load_data();
+        std::ifstream datai("results.bin", std::ios::binary);
+        struct PlayerStats tmp;
+
+        while (datai.read((char *)&tmp, sizeof(tmp)))
+        {
+            std::cout << tmp.name << " " << tmp.points << " " << tmp.time << std::endl;
+        }
+        std::cout << "\n";
+        datai.close();
+
         game_over_screen.draw();
         just_died = false;
         SDL_RenderPresent(renderer);
@@ -495,6 +537,20 @@ void Game::menu()
                 {
                     screen = 0;
                     level = 0;
+                    char tmp_text[50] = "Vpisi svoje ime v konzolo";
+                    menu_screen.change_title(tmp_text);
+
+                    SDL_RenderClear(renderer);
+                    menu_screen.draw();
+                    SDL_RenderPresent(renderer);
+
+                    std::cout << "Vpisi svoje ime: ";
+                    do
+                        gets(player_stats.name);
+                    while (strlen(player_stats.name) > 20);
+
+                    strcpy(tmp_text, "Osvoboditelj");
+                    menu_screen.change_title(tmp_text);
                     this->init_level();
                 }
                 else if (pos == 1)
@@ -534,4 +590,64 @@ void Game::tutorial()
     SDL_RenderClear(renderer);
     tutorial_screen.draw();
     SDL_RenderPresent(renderer);
+}
+
+void Game::write_result()
+{
+    std::ifstream datai("results.bin", std::ios::binary);
+    std::ofstream datao("tmp.bin", std::ios::binary);
+    struct PlayerStats tmp;
+    int cnt = 0;
+    bool written = false;
+
+    while (datai.read((char *)&tmp, sizeof(tmp)))
+    {
+        if (cnt == 5)
+            break;
+
+        cnt++;
+
+        if (tmp.points > player_stats.points)
+            datao.write((char *)&tmp, sizeof(tmp));
+        else if (tmp.points == player_stats.points)
+        {
+            if (tmp.time <= player_stats.time)
+                datao.write((char *)&tmp, sizeof(tmp));
+            else
+            {
+                datao.write((char *)&player_stats, sizeof(player_stats));
+                written = true;
+                break;
+            }
+        }
+        else
+        {
+            datao.write((char *)&player_stats, sizeof(player_stats));
+            written = true;
+            break;
+        }
+    }
+
+    if (cnt < 5 && !written) // so bili zapisani vsi razen trenutnega in je se prostor
+        datao.write((char *)&player_stats, sizeof(player_stats));
+    else if (cnt < 5 && written) // trenutni je bil ze vpisan in imamo se prostor
+    {
+        datao.write((char *)&tmp, sizeof(tmp)); // ga se nismo zapisali
+        cnt++;
+
+        while (datai.read((char *)&tmp, sizeof(tmp))) // zapisuj dokler se lahko
+        {
+            if (cnt == 5)
+                break;
+
+            cnt++;
+            datao.write((char *)&tmp, sizeof(tmp));
+        }
+    }
+
+    datai.close();
+    datao.close();
+
+    remove("results.bin");
+    rename("tmp.bin", "results.bin");
 }

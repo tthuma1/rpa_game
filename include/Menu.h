@@ -22,4 +22,5 @@ public:
     void move_down();
     void move_up();
     int get_position();
+    void change_title(char text[]);
 };

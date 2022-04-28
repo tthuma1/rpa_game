@@ -4,6 +4,9 @@
 #include <iostream>
 #include <vector>
 #include <ctime>
+#include <cstring>
+#include <cstdio>
+#include <fstream>
 
 #include <Player.h>
 #include <Background.h>
@@ -29,10 +32,11 @@ private:
     bool first_finish = true;
     int level = 0;                         // 0 do 3
     int num_platforms[4] = {5, 8, 11, 13}; // glede na level
-    int num_animals[4] = {3, 5, 7, 9};
+    int num_animals[4] = {1, 1, 1, 1};     //{3, 5, 7, 9};
     int animals_left;
     int screen; // 0 = game, 1 = game over, 2 = menu, 3 = tutorial
     bool just_died;
+    PlayerStats player_stats;
 
     Player player;
     Background background;
@@ -43,14 +47,13 @@ private:
     Animal animal;
     Ally ally;
     Arrow arrow;
-    Text preostale, level_curr, level_done;
+    Text preostale, level_curr, level_done, time_text;
     GameOver game_over_screen;
     Menu menu_screen;
     Tutorial tutorial_screen;
 
     std::chrono::steady_clock::time_point last_frame = std::chrono::steady_clock::now();
-    std::chrono::steady_clock::time_point curr_time;
-    std::chrono::steady_clock::time_point finish_time;
+    std::chrono::steady_clock::time_point curr_time, finish_time, start_game_time, curr_game_time;
 
 public:
     Game();
@@ -60,4 +63,5 @@ public:
     void menu();
     void tutorial();
     void init_level();
+    void write_result();
 };

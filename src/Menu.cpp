@@ -13,7 +13,7 @@ void Menu::init(SDL_Renderer *renderer)
 
     // title
     char tmp_text[60] = "Osvoboditelj";
-    title.init_center(renderer, HEIGHT / 2 - 150, 70, tmp_text);
+    title.init_center(renderer, HEIGHT / 2 - 140, 70, tmp_text);
 
     // izbira
     strcpy(tmp_text, "Nova igra");
@@ -74,4 +74,9 @@ void Menu::move_up()
 int Menu::get_position()
 {
     return position;
+}
+
+void Menu::change_title(char text[])
+{
+    title.change_text_center(text);
 }

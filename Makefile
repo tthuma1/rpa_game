@@ -25,6 +25,7 @@ DELOBJ = $(OBJ)
 DEL = del
 EXE = .exe
 WDELOBJ = $(SRC:$(SRCDIR)/%$(EXT)=$(OBJDIR)\\%.o)
+WDELDEP = $(OBJ:$(OBJDIR)/%.o=$(DEPSDIR)\\%.d)
 
 ########################################################################
 ####################### Targets beginning here #########################
@@ -62,9 +63,9 @@ cleandep:
 # Cleans complete project
 .PHONY: cleanw
 cleanw:
-	$(DEL) $(WDELOBJ) $(DEP) $(APPNAME)$(EXE)
+	$(DEL) $(WDELOBJ) $(WDELDEP) $(APPNAME)$(EXE)
 
 # Cleans only all files with the extension .d
 .PHONY: cleandepw
 cleandepw:
-	$(DEL) $(DEP)
+	$(DEL) $(WDELDEP)
