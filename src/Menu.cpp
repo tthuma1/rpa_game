@@ -22,8 +22,11 @@ void Menu::init(SDL_Renderer *renderer)
     strcpy(tmp_text, "Navodila");
     options[1].init_center(renderer, HEIGHT / 2 + 100, 40, tmp_text);
 
-    strcpy(tmp_text, "Izhod");
+    strcpy(tmp_text, "Posnetek");
     options[2].init_center(renderer, HEIGHT / 2 + 150, 40, tmp_text);
+
+    strcpy(tmp_text, "Izhod");
+    options[3].init_center(renderer, HEIGHT / 2 + 200, 40, tmp_text);
 
     // arrow
     rect_arrow = {WIDTH - 400, HEIGHT / 2 + 50 - 5, 75, 50}; // y start on position 0
@@ -38,14 +41,14 @@ void Menu::draw()
 {
     SDL_RenderCopy(this->renderer, background, NULL, &rect_bg);
     title.draw();
-    for (int i = 0; i < 3; i++)
+    for (int i = 0; i < 4; i++)
         options[i].draw();
     SDL_RenderCopy(this->renderer, arrow, NULL, &rect_arrow);
 }
 
 void Menu::move_down()
 {
-    if (position != 2)
+    if (position != 3)
     {
         position++;
         rect_arrow.y += 50;
@@ -66,8 +69,8 @@ void Menu::move_up()
     }
     else
     {
-        position = 2;
-        rect_arrow.y = HEIGHT / 2 + 150 - 5;
+        position = 3;
+        rect_arrow.y = HEIGHT / 2 + 200 - 5;
     }
 }
 

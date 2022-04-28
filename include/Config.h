@@ -22,4 +22,4 @@
 #define ANIMAL_WIDTH 49
 #define ANIMAL_HEIGHT 30
 
-#define MAX_HEALTH 1
+#define MAX_HEALTH 5

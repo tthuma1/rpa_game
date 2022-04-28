@@ -43,14 +43,14 @@ Game::Game()
     game_over_screen.init(renderer);
     menu_screen.init(renderer);
     tutorial_screen.init(renderer);
-
-    this->init_level();
 }
 
 void Game::init_level()
 {
+    std::ofstream datao_replay("replay.bin", std::ios::binary);
     // start_x je med enim screenom od levega in desnega roba
     int start_x = rand() % (BG_WIDTH - 3 * WIDTH) - BG_WIDTH + 2 * WIDTH; // [-BG_WIDTH + 2 * WIDTH, -WIDTH) = [-3000, -1000]
+    datao_replay.write((char *)&start_x, sizeof(start_x));
     // std::cout << start_x << std::endl;
 
     // level = 3;
@@ -105,6 +105,9 @@ void Game::init_level()
         // std::cout << plat_x << " " << plat_y << std::endl;
         platforms[i].reset(plat_x, plat_y);
 
+        datao_replay.write((char *)&plat_x, sizeof(plat_x));
+        datao_replay.write((char *)&plat_y, sizeof(plat_y));
+
         short new_direction = rand() % 10; // right = 0-4, left = 4-9
         // 50-50 chance for each direction
         if (plat_x < 1 * WIDTH + start_x)
@@ -152,6 +155,8 @@ void Game::init_level()
         player_stats.points = 0;
     }
 
+    last_move_time = std::chrono::steady_clock::now();
+    datao_replay.close();
     // std::cout << "End init\n";
 }
 
@@ -182,6 +187,7 @@ void Game::run()
 void Game::game_screen()
 {
     SDL_Event e;
+    std::ofstream datao_replay("replay.bin", std::ios::binary | std::ios::app);
     while (SDL_PollEvent(&e) != 0)
     {
         // std::cout << e.type << std::endl;
@@ -189,6 +195,10 @@ void Game::game_screen()
             is_running = false;
         else if (e.type == SDL_KEYDOWN)
         {
+            curr_time = std::chrono::steady_clock::now();
+            int time_span = (curr_time - last_move_time).count();
+            int direction;
+
             switch (e.key.keysym.sym)
             {
             case SDLK_d:
@@ -200,6 +210,11 @@ void Game::game_screen()
                     platforms[i].set_direction(1);
                 animal.set_direction(1);
                 ally.set_direction(1);
+
+                last_move_time = std::chrono::steady_clock::now();
+                direction = 1;
+                datao_replay.write((char *)&time_span, sizeof(time_span));
+                datao_replay.write((char *)&direction, sizeof(int));
                 break;
             case SDLK_a:
             case SDLK_LEFT:
@@ -210,6 +225,11 @@ void Game::game_screen()
                     platforms[i].set_direction(2);
                 animal.set_direction(2);
                 ally.set_direction(2);
+
+                last_move_time = std::chrono::steady_clock::now();
+                direction = 2;
+                datao_replay.write((char *)&time_span, sizeof(time_span));
+                datao_replay.write((char *)&direction, sizeof(int));
                 break;
             case SDLK_j:
             case SDLK_s:
@@ -221,6 +241,11 @@ void Game::game_screen()
                     platforms[i].set_direction(0);
                 animal.set_direction(0);
                 ally.set_direction(0);
+
+                last_move_time = std::chrono::steady_clock::now();
+                direction = 0;
+                datao_replay.write((char *)&time_span, sizeof(time_span));
+                datao_replay.write((char *)&direction, sizeof(int));
                 break;
             case SDLK_w:
             case SDLK_SPACE:
@@ -228,10 +253,16 @@ void Game::game_screen()
                 // std::cout << "space " << player.get_vel_y() << std::endl;
                 if (player.get_vel_y() == 0) // no double jumping
                     player.set_vel_y(20);
+
+                last_move_time = std::chrono::steady_clock::now();
+                direction = 3;
+                datao_replay.write((char *)&time_span, sizeof(time_span));
+                datao_replay.write((char *)&direction, sizeof(int));
                 break;
             }
         }
     }
+    datao_replay.close();
 
     curr_time = std::chrono::steady_clock::now();
 
@@ -555,6 +586,8 @@ void Game::menu()
                 }
                 else if (pos == 1)
                     screen = 3;
+                else if (pos == 2)
+                    this->replay();
                 else
                     is_running = false;
                 break;
@@ -565,6 +598,244 @@ void Game::menu()
     SDL_RenderClear(renderer);
     menu_screen.draw();
     SDL_RenderPresent(renderer);
+}
+
+void Game::replay()
+{
+
+    std::ifstream datai_replay("replay.bin", std::ios::binary);
+    int tmp;
+    if (datai_replay.is_open())
+    {
+        // --- start init ---
+        int start_x;
+        datai_replay.read((char *)&start_x, sizeof(int));
+        // std::cout << start_x << std::endl;
+
+        // level = 3;
+
+        // std::cout << "Start init\n";
+
+        animals_left = num_animals[level];
+        just_died = false;
+
+        // create text for preostale
+        char tmp_text[40] = "Preostale zivali:  ";
+        tmp_text[strlen(tmp_text) - 1] = '0' + animals_left;
+        preostale.init(renderer, 20, 10, tmp_text);
+
+        // create text for level_curr
+        strcpy(tmp_text, "Stopnja   od 4");
+        tmp_text[8] = '1' + level;
+        // std::cout << tmp_text << std::endl;
+        level_curr.init(renderer, 20, 50, tmp_text);
+
+        strcpy(tmp_text, "0 s");
+        time_text.init(renderer, 20, 90, tmp_text);
+
+        background.reset(start_x);
+        ground.reset(start_x);
+
+        // std::cout << "Mid init\n";
+        // platforms.clear();
+
+        // prva platforma je max polovico zaslona levo ali cetrtino zaslona desno od igralca
+        int plat_x, plat_y;
+
+        for (int i = 0; i < num_platforms[level]; i++)
+        {
+            datai_replay.read((char *)&plat_x, sizeof(int));
+            datai_replay.read((char *)&plat_y, sizeof(int));
+            // std::cout << plat_x << " " << plat_y << std::endl;
+            platforms[i].reset(plat_x, plat_y);
+        }
+
+        // resetting values
+        ground.set_direction(0);
+        background.set_direction(0);
+        player.set_direction(0);
+        for (int i = 0; i < num_platforms[level]; i++)
+            platforms[i].set_direction(0);
+
+        health.reset();
+        player.set_vel_y(-10);
+
+        if (level == 0)
+        {
+            start_game_time = std::chrono::steady_clock::now();
+            player_stats.points = 0;
+        }
+
+        last_move_time = std::chrono::steady_clock::now();
+
+        // --- finish init ---
+
+        // --- start replay gameplay ---
+
+        while (datai_replay.read((char *)&tmp, sizeof(int)))
+        {
+            curr_time = std::chrono::steady_clock::now();
+            int time_span = (curr_time - last_move_time).count();
+            int direction;
+
+            while (time_span < tmp)
+            {
+                if ((curr_time - last_frame).count() > 10000000) // > 10 ms, 100 Hz
+                {
+                    SDL_RenderClear(renderer);
+
+                    int player_vel_y = player.get_vel_y();
+
+                    if (player_vel_y > 0)
+                    {
+                        ground.move_down(player_vel_y);
+                        background.move_down(player_vel_y);
+
+                        for (int i = 0; i < num_platforms[level]; i++)
+                            platforms[i].move_down(player_vel_y);
+
+                        player.set_vel_y(player_vel_y - 1);
+
+                        if (player_vel_y == 1)
+                            player.set_vel_y(-1); // avoid floating
+                    }
+                    else if (player_vel_y < 0)
+                    {
+                        ground.move_up(-player_vel_y);
+                        background.move_up(-player_vel_y);
+
+                        for (int i = 0; i < num_platforms[level]; i++)
+                            platforms[i].move_up(-player_vel_y);
+
+                        if (player_vel_y > -10) // min vel_y
+                            player.set_vel_y(player_vel_y - 1);
+
+                        if (ground.detect_player_collision(player.get_rect()))
+                        {
+                            player.set_vel_y(0);
+                        }
+
+                        bool platform_collision = false;
+                        for (int i = 0; i < num_platforms[level]; i++)
+                        {
+                            if (platforms[i].detect_player_collision(player.get_rect()))
+                                platform_collision = true;
+                        }
+
+                        // player got on platform
+                        if (!player.get_is_on_platform() && platform_collision)
+                        {
+                            player.set_vel_y(0);
+                            player.set_is_on_platform(true);
+                        }
+                    }
+
+                    bool no_platform_player_collision = true;
+                    for (int i = 0; i < num_platforms[level]; i++)
+                    {
+                        if (platforms[i].detect_player_collision(player.get_rect()))
+                            no_platform_player_collision = false;
+                    }
+
+                    // player must start falling from platform
+                    if (player.get_is_on_platform() && no_platform_player_collision)
+                    {
+                        // std::cout << "no collision and is on platform\n";
+                        player.set_is_on_platform(false);
+                        if (player.get_vel_y() == 0) // if walked down from platform
+                            player.set_vel_y(-1);
+                    }
+
+                    background.move();
+                    if (ground.move())
+                    {
+                        for (int i = 0; i < num_platforms[level]; i++)
+                            platforms[i].move();
+                    }
+
+                    background.draw();
+                    ground.draw();
+                    for (int i = 0; i < num_platforms[level]; i++)
+                    {
+                        platforms[i].draw();
+                    }
+
+                    player.draw();
+
+                    preostale.draw();
+                    level_curr.draw();
+
+                    // update time counter
+                    curr_game_time = std::chrono::steady_clock::now();
+
+                    std::chrono::duration<int> time_span = std::chrono::duration_cast<std::chrono::duration<int>>(curr_game_time - start_game_time);
+
+                    char tmp_text[40];
+                    sprintf(tmp_text, "%d", time_span.count());
+                    char tmp_text2[50] = "Cas: ";
+                    strcat(tmp_text2, tmp_text);
+                    strcat(tmp_text2, " s");
+                    time_text.change_text(tmp_text2, 20);
+
+                    time_text.draw();
+
+                    // frame is updated
+                    last_frame = curr_time;
+                    SDL_RenderPresent(renderer);
+                }
+
+                curr_time = std::chrono::steady_clock::now();
+                time_span = (curr_time - last_move_time).count();
+            }
+
+            datai_replay.read((char *)&direction, sizeof(int));
+            switch (direction)
+            {
+            case 1:
+                ground.set_direction(1);
+                background.set_direction(1);
+                player.set_direction(1);
+                for (int i = 0; i < num_platforms[level]; i++)
+                    platforms[i].set_direction(1);
+                animal.set_direction(1);
+                ally.set_direction(1);
+
+                last_move_time = std::chrono::steady_clock::now();
+                break;
+            case 2:
+                ground.set_direction(2);
+                background.set_direction(2);
+                player.set_direction(2);
+                for (int i = 0; i < num_platforms[level]; i++)
+                    platforms[i].set_direction(2);
+                animal.set_direction(2);
+                ally.set_direction(2);
+
+                last_move_time = std::chrono::steady_clock::now();
+                break;
+            case 0:
+                ground.set_direction(0);
+                background.set_direction(0);
+                player.set_direction(0);
+                for (int i = 0; i < num_platforms[level]; i++)
+                    platforms[i].set_direction(0);
+                animal.set_direction(0);
+                ally.set_direction(0);
+
+                last_move_time = std::chrono::steady_clock::now();
+                break;
+            case 3:
+                // std::cout << "space " << player.get_vel_y() << std::endl;
+                if (player.get_vel_y() == 0) // no double jumping
+                    player.set_vel_y(20);
+
+                last_move_time = std::chrono::steady_clock::now();
+                break;
+            }
+        }
+
+        datai_replay.close();
+    }
 }
 
 void Game::tutorial()
