@@ -77,3 +77,8 @@ void Ally::reset(int x, int y)
     rect.x = x;
     rect.y = y;
 }
+
+SDL_Rect Ally::get_rect()
+{
+    return rect;
+}

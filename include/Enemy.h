@@ -4,6 +4,13 @@
 #include <SDL2/SDL_image.h>
 #include <Config.h>
 #include <chrono>
+#include <fstream>
+
+struct EnemyStats
+{
+    int relative_x;
+    short direction;
+};
 
 class Enemy
 {
@@ -34,9 +41,12 @@ private:
 
 public:
     void init(SDL_Renderer *renderer, int);
+    void init(SDL_Renderer *renderer, int, struct EnemyStats);
 
     void draw(int, int);
     SDL_Rect get_rect();
+    int get_relative_x();
+    int get_direction();
     void move();
     int get_platform_num();
 
@@ -44,4 +54,5 @@ public:
     bool detect_player_collision(SDL_Rect);
 
     void reset();
+    void reset(int, int);
 };

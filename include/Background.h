@@ -24,6 +24,8 @@ public:
     void move_up(int);
     void move_down(int);
     void detect_border_collision();
+    SDL_Rect get_rect();
 
     void reset(int x);
+    void reset(int x, int y);
 };

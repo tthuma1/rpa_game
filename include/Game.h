@@ -22,6 +22,17 @@
 #include <Menu.h>
 #include <Tutorial.h>
 
+struct GameStats
+{
+    int level, play_time, animals_left, health,
+        ground_x, ground_y, background_y,
+        animal_x, animal_y, ally_x, ally_y,
+        platforms_x[13], platforms_y[13],
+        num_enemies, enemies_platforms[13], enemies_directions[13],
+        enemies_x[13];
+    struct PlayerStats player_stats;
+};
+
 class Game
 {
 private:
@@ -36,6 +47,7 @@ private:
     int animals_left;
     int screen; // 0 = game, 1 = game over, 2 = menu, 3 = tutorial
     bool just_died;
+    int add_play_time;
     PlayerStats player_stats;
 
     Player player;
@@ -65,4 +77,7 @@ public:
     void tutorial();
     void init_level();
     void write_result();
+
+    void save_game();
+    void load_game();
 };

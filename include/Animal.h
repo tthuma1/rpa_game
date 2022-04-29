@@ -4,6 +4,11 @@
 #include <SDL2/SDL_image.h>
 #include <chrono>
 
+struct AnimalStats
+{
+    int x, y;
+};
+
 class Animal
 {
 private:

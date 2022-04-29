@@ -10,6 +10,43 @@ void Enemy::init(SDL_Renderer *renderer, int plat_num)
     relative_x = rand() % PLAT_WIDTH; // [min_x, max_x)
     direction = rand() % 2;
 
+    struct EnemyStats tmp_stats;
+    tmp_stats.relative_x = relative_x;
+    tmp_stats.direction = direction;
+
+    std::ofstream datao_replay("replay.bin", std::ios::binary | std::ios::app);
+    if (datao_replay.is_open())
+    {
+        datao_replay.write((char *)&tmp_stats, sizeof(tmp_stats));
+        datao_replay.close();
+    }
+
+    rect = {0, 0, PL_WIDTH, PL_HEIGHT};
+
+    char tmp[40];
+    for (int i = 0; i < 8; i++)
+    {
+        strcpy(tmp, "assets/enemy/");
+        strcat(tmp, paths[i]);
+
+        // std::cout << tmp << std::endl;
+
+        SDL_Surface *surface = IMG_Load(tmp);
+        assets[i] = SDL_CreateTextureFromSurface(this->renderer, surface);
+    }
+}
+
+void Enemy::init(SDL_Renderer *renderer, int plat_num, struct EnemyStats enemy_stats)
+{
+    // std::cout << "Enemy initilized\n";
+    this->renderer = renderer;
+    platform_num = plat_num;
+
+    relative_x = enemy_stats.relative_x;
+    direction = enemy_stats.direction;
+
+    // std::cout << relative_x << " " << direction << std::endl;
+
     rect = {0, 0, PL_WIDTH, PL_HEIGHT};
 
     char tmp[40];
@@ -93,4 +130,20 @@ int Enemy::get_platform_num()
 void Enemy::reset()
 {
     relative_x = 0;
+}
+
+void Enemy::reset(int dir, int x)
+{
+    direction = dir;
+    relative_x = x;
+}
+
+int Enemy::get_direction()
+{
+    return direction;
+}
+
+int Enemy::get_relative_x()
+{
+    return relative_x;
 }

@@ -27,6 +27,12 @@ void Background::reset(int x)
     rect.y = -BG_HEIGHT + HEIGHT;
 }
 
+void Background::reset(int x, int y)
+{
+    rect.x = x;
+    rect.y = y;
+}
+
 void Background::set_direction(int a)
 {
     direction = a;
@@ -64,4 +70,9 @@ void Background::detect_border_collision()
 
     if (rect.y < -BG_HEIGHT + HEIGHT)
         rect.y = -BG_HEIGHT + HEIGHT;
+}
+
+SDL_Rect Background::get_rect()
+{
+    return rect;
 }

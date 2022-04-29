@@ -20,6 +20,12 @@ void Ground::reset(int x)
     rect.y = GROUND_Y;
 }
 
+void Ground::reset(int x, int y)
+{
+    rect.x = x;
+    rect.y = y;
+}
+
 void Ground::set_direction(int a)
 {
     direction = a;
@@ -72,4 +78,9 @@ bool Ground::detect_player_collision(SDL_Rect player_rect)
     }
 
     return false;
+}
+
+SDL_Rect Ground::get_rect()
+{
+    return rect;
 }

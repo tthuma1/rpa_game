@@ -24,4 +24,6 @@ public:
     bool detect_player_collision(SDL_Rect player_rect);
 
     void reset(int x);
+    void reset(int x, int y);
+    SDL_Rect get_rect();
 };

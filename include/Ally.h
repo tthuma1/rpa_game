@@ -4,6 +4,11 @@
 #include <SDL2/SDL_image.h>
 #include <chrono>
 
+struct AllyStats
+{
+    int x, y;
+};
+
 class Ally
 {
 private:
@@ -34,6 +39,7 @@ public:
     void move_down(int);
 
     void reset(int x, int y);
+    SDL_Rect get_rect();
 
     bool detect_player_collision(SDL_Rect);
 };

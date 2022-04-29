@@ -12,7 +12,7 @@ private:
     SDL_Texture *background, *arrow;
     SDL_Rect rect_bg, rect_arrow;
 
-    Text title, options[4];
+    Text title, options[5];
     int position;
 
 public:
