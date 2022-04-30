@@ -14,13 +14,6 @@ void Enemy::init(SDL_Renderer *renderer, int plat_num)
     tmp_stats.relative_x = relative_x;
     tmp_stats.direction = direction;
 
-    std::ofstream datao_replay("replay.bin", std::ios::binary | std::ios::app);
-    if (datao_replay.is_open())
-    {
-        datao_replay.write((char *)&tmp_stats, sizeof(tmp_stats));
-        datao_replay.close();
-    }
-
     rect = {0, 0, PL_WIDTH, PL_HEIGHT};
 
     char tmp[40];

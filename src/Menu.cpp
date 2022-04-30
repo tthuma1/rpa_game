@@ -25,7 +25,7 @@ void Menu::init(SDL_Renderer *renderer)
     strcpy(tmp_text, "Navodila");
     options[2].init_center(renderer, HEIGHT / 2 + 100, 40, tmp_text);
 
-    strcpy(tmp_text, "Posnetek prejsnje igre");
+    strcpy(tmp_text, "Posnetek prejsnje stopnje");
     options[3].init_center(renderer, HEIGHT / 2 + 150, 40, tmp_text);
 
     strcpy(tmp_text, "Izhod");
@@ -63,7 +63,7 @@ void Menu::move_down()
     }
 
     if (position == 3)
-        rect_arrow.x = WIDTH - 300;
+        rect_arrow.x = WIDTH - 270;
     else
         rect_arrow.x = WIDTH - 380;
 }
@@ -82,7 +82,7 @@ void Menu::move_up()
     }
 
     if (position == 3)
-        rect_arrow.x = WIDTH - 300;
+        rect_arrow.x = WIDTH - 270;
     else
         rect_arrow.x = WIDTH - 380;
 }
