@@ -10,10 +10,6 @@ void Enemy::init(SDL_Renderer *renderer, int plat_num)
     relative_x = rand() % PLAT_WIDTH; // [min_x, max_x)
     direction = rand() % 2;
 
-    struct EnemyStats tmp_stats;
-    tmp_stats.relative_x = relative_x;
-    tmp_stats.direction = direction;
-
     rect = {0, 0, PL_WIDTH, PL_HEIGHT};
 
     char tmp[40];

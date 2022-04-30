@@ -1,4 +1,5 @@
 *.d
+*.bin
 obj/*
 bin/game.exe
 /.vscode
